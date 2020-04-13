@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+    web1:
+        image: nginx:stable-alpine
+        command: sh -c "sleep 11 && nginx -g 'daemon off;'"
+        ports:
+            - 81:80
+        networks:
+            - test
+
+    web2:
+        build: .
+        command: sh -c './wait-for web1:80 -- nginx -g "daemon off;"'
+        depends_on: 
+            - web1
+        ports:
+            - 82:80
+        networks:
+            - test
+
+networks:
+    test:
